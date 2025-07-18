@@ -1,16 +1,15 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 // Context Providers
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Components
 import Navbar from './components/common/Navbar';
-import LoadingSpinner from './components/common/LoadingSpinner';
 
 // Pages
 import Landing from './pages/Landing';
@@ -28,33 +27,10 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
     },
   },
 });
-
-// Protected Route Component
-const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const { isAuthenticated, user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading..." />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user?.user_type)) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
 
 // App Layout Component
 const AppLayout = ({ children, showNavbar = true }) => {
@@ -101,72 +77,58 @@ const AppContent = () => {
           }
         />
 
-        {/* Farmer Routes */}
+        {/* Dashboard Routes - No auth required for testing */}
         <Route
           path="/farmer-dashboard"
           element={
-            <ProtectedRoute allowedRoles={['farmer']}>
-              <AppLayout>
-                <FarmerDashboard />
-              </AppLayout>
-            </ProtectedRoute>
+            <AppLayout>
+              <FarmerDashboard />
+            </AppLayout>
+          }
+        />
+
+        <Route
+          path="/staff-dashboard"
+          element={
+            <AppLayout>
+              <StaffDashboard />
+            </AppLayout>
+          }
+        />
+
+        <Route
+          path="/govt-dashboard"
+          element={
+            <AppLayout>
+              <GovtDashboard />
+            </AppLayout>
           }
         />
 
         <Route
           path="/crop-dashboard/:farmerId/farm/:farmId"
           element={
-            <ProtectedRoute allowedRoles={['farmer', 'staff']}>
-              <AppLayout>
-                <CropDashboard />
-              </AppLayout>
-            </ProtectedRoute>
+            <AppLayout>
+              <CropDashboard />
+            </AppLayout>
           }
         />
 
         <Route
           path="/analysis-results/:farmerId/farm/:farmId"
           element={
-            <ProtectedRoute allowedRoles={['farmer', 'staff', 'govt_official']}>
-              <AppLayout>
-                <AnalysisResults />
-              </AppLayout>
-            </ProtectedRoute>
+            <AppLayout>
+              <AnalysisResults />
+            </AppLayout>
           }
         />
 
         <Route
           path="/map/:farmId/farmer/:farmerId"
           element={
-            <ProtectedRoute allowedRoles={['farmer', 'staff']}>
-              <AppLayout>
-                <MapDrawing />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Staff Routes */}
-        <Route
-          path="/staff-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={['staff']}>
-              <AppLayout>
-                <StaffDashboard />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Government Official Routes */}
-        <Route
-          path="/govt-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={['govt_official']}>
-              <AppLayout>
-                <GovtDashboard />
-              </AppLayout>
-            </ProtectedRoute>
+            <AppLayout>
+              <MapDrawing />
+            </AppLayout>
           }
         />
 

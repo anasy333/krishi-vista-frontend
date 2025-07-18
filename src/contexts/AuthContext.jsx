@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getToken, removeToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -14,21 +13,21 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Changed to false for demo
 
   useEffect(() => {
-    const token = getToken();
-    if (token) {
-      // Decode token to get user info (you might want to validate with backend)
-      try {
-        const userData = JSON.parse(localStorage.getItem('krishisat_user') || '{}');
-        setUser(userData);
-        setIsAuthenticated(true);
-      } catch (error) {
-        removeToken();
-        localStorage.removeItem('krishisat_user');
-      }
-    }
+    // For demo purposes, auto-authenticate as farmer
+    const mockUser = {
+      id: 1,
+      first_name: 'Demo',
+      last_name: 'Farmer',
+      user_type: 'farmer',
+      email: 'demo@krishisat.com',
+      phone: '+91 9876543210'
+    };
+    
+    setUser(mockUser);
+    setIsAuthenticated(true);
     setLoading(false);
   }, []);
 
@@ -40,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    removeToken();
+    localStorage.removeItem('krishisat_token');
     localStorage.removeItem('krishisat_user');
     setUser(null);
     setIsAuthenticated(false);
