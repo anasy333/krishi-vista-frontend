@@ -1,42 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* KrishiSat Agricultural Analytics Platform Design System */
 
 @layer base {
   :root {
+    /* KrishiSat Green Theme */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary Green - Main brand color */
+    --primary: 122 39% 49%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 122 25% 74%;
+    --primary-dark: 122 39% 40%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary/Accent Green */
+    --secondary: 122 25% 92%;
+    --secondary-foreground: 0 0% 15%;
+    --accent: 122 25% 74%;
+    --accent-foreground: 0 0% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Neutral colors */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --success: 122 39% 49%;
+    --success-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 15%;
 
-    --radius: 0.5rem;
+    /* UI Elements */
+    --border: 0 0% 90%;
+    --input: 0 0% 95%;
+    --ring: 122 39% 49%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
+
+    /* Shadows */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-large: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-green: 0 4px 16px hsla(var(--primary), 0.2);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-out;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +127,94 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-inter;
+  }
+}
+
+@layer components {
+  /* Custom button variants */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary-dark;
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-accent;
+    transition: var(--transition-fast);
+  }
+
+  .btn-gradient {
+    background: var(--gradient-primary);
+    @apply text-primary-foreground;
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow-green);
+  }
+
+  .btn-gradient:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-large);
+  }
+
+  /* Card styles */
+  .card-elevated {
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-smooth);
+  }
+
+  .card-elevated:hover {
+    box-shadow: var(--shadow-large);
+    transform: translateY(-2px);
+  }
+
+  /* Form elements */
+  .input-field {
+    @apply bg-input border border-border rounded-lg px-4 py-3 text-foreground;
+    transition: var(--transition-fast);
+  }
+
+  .input-field:focus {
+    @apply outline-none ring-2 ring-primary border-primary;
+  }
+
+  /* Loading animation */
+  .loading-spinner {
+    @apply animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent;
+  }
+
+  /* Success/Error states */
+  .success-message {
+    @apply bg-success/10 text-success border border-success/20 rounded-lg p-4;
+  }
+
+  .error-message {
+    @apply bg-destructive/10 text-destructive border border-destructive/20 rounded-lg p-4;
+  }
+
+  /* Navigation styles */
+  .nav-link {
+    @apply relative px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .nav-link.active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .nav-link:hover:not(.active) {
+    @apply bg-secondary text-secondary-foreground;
+  }
+
+  /* Agricultural theme specific */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .leaf-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%234CAF50' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E");
   }
 }
