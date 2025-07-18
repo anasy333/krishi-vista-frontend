@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Building, Shield, ArrowRight, ChevronDown } from 'lucide-react';
+import { User, Building, Shield, ArrowRight, Leaf } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { authAPI, dataAPI } from '../services/api';
 import { toast } from '../hooks/use-toast';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const Register = () => {
   const [userType, setUserType] = useState('');
@@ -22,74 +20,59 @@ const Register = () => {
     organization: '',
     designation: '',
   });
-  const [states, setStates] = useState([]);
-  const [districts, setDistricts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingData, setLoadingData] = useState(false);
   
   const navigate = useNavigate();
+
+  // Mock data
+  const states = [
+    { id: 1, name: 'Punjab' },
+    { id: 2, name: 'Haryana' },
+    { id: 3, name: 'Uttar Pradesh' },
+    { id: 4, name: 'Rajasthan' },
+    { id: 5, name: 'Madhya Pradesh' }
+  ];
+
+  const districts = [
+    { id: 1, name: 'Ludhiana' },
+    { id: 2, name: 'Amritsar' },
+    { id: 3, name: 'Chandigarh' },
+    { id: 4, name: 'Gurgaon' },
+    { id: 5, name: 'Faridabad' }
+  ];
 
   const userTypes = [
     {
       type: 'farmer',
       title: 'Farmer',
-      description: 'Access farm analytics, crop monitoring, and yield predictions',
+      description: 'Monitor your crops with satellite analytics and get personalized insights',
       icon: User,
+      color: 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100',
+      iconColor: 'text-emerald-600'
     },
     {
       type: 'staff',
-      title: 'Staff',
-      description: 'Manage farmer accounts and provide agricultural support',
+      title: 'Agricultural Staff',
+      description: 'Support farmers with data-driven recommendations and field management',
       icon: Building,
+      color: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
+      iconColor: 'text-blue-600'
     },
     {
       type: 'govt_official',
       title: 'Government Official',
-      description: 'Access regional analytics and policy insights',
+      description: 'Access regional agricultural data and policy insights for better governance',
       icon: Shield,
+      color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
+      iconColor: 'text-purple-600'
     },
   ];
-
-  useEffect(() => {
-    loadStates();
-  }, []);
-
-  const loadStates = async () => {
-    setLoadingData(true);
-    try {
-      const response = await dataAPI.getStates();
-      setStates(response.data);
-    } catch (error) {
-      console.error('Failed to load states:', error);
-    } finally {
-      setLoadingData(false);
-    }
-  };
-
-  const loadDistricts = async (stateId) => {
-    try {
-      const response = await dataAPI.getDistricts();
-      // Filter districts by state (assuming API returns filtered data)
-      setDistricts(response.data);
-    } catch (error) {
-      console.error('Failed to load districts:', error);
-    }
-  };
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleStateChange = (value) => {
-    setFormData({
-      ...formData,
-      state: value,
-      district: '', // Reset district when state changes
-    });
-    loadDistricts(value);
   };
 
   const handleSubmit = async (e) => {
@@ -105,82 +88,78 @@ const Register = () => {
     }
 
     setLoading(true);
-    try {
-      let response;
-      
-      switch (userType) {
-        case 'farmer':
-          response = await authAPI.registerFarmer(formData);
-          break;
-        case 'staff':
-          response = await authAPI.registerStaff(formData);
-          break;
-        case 'govt_official':
-          response = await authAPI.registerGovtOfficial(formData);
-          break;
-        default:
-          throw new Error('Invalid user type');
-      }
-
+    
+    // Mock registration - simulate API call
+    setTimeout(() => {
       toast({
-        title: 'Registration Successful!',
-        description: 'Please login with your phone number to continue',
+        title: 'Registration Successful! 🎉',
+        description: 'Welcome to KrishiSat! Please login to continue.',
       });
       
       navigate('/login');
-    } catch (error) {
-      toast({
-        title: 'Registration Failed',
-        description: error.response?.data?.message || 'Something went wrong',
-        variant: 'destructive',
-      });
-    } finally {
       setLoading(false);
-    }
+    }, 1500);
   };
 
   if (!userType) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-secondary/20 leaf-pattern px-4">
-        <div className="w-full max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-4">Join KrishiSat</h1>
-            <p className="text-xl text-muted-foreground">Choose your role to get started</p>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+        {/* Header */}
+        <div className="bg-white/80 backdrop-blur-sm border-b border-green-100 sticky top-0 z-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Link to="/" className="flex items-center space-x-2 text-green-600 hover:text-green-700 transition-colors">
+              <Leaf className="h-8 w-8" />
+              <span className="text-xl font-bold">KrishiSat</span>
+            </Link>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Join the Future of <span className="text-green-600">Smart Agriculture</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Choose your role and start leveraging satellite technology for data-driven farming decisions
+            </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* User Type Cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {userTypes.map((type) => (
               <Card 
                 key={type.type}
-                className="card-elevated cursor-pointer transition-all hover:scale-105"
+                className={`${type.color} cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 border-2`}
                 onClick={() => setUserType(type.type)}
               >
-                <CardHeader className="text-center">
-                  <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                    <type.icon className="h-8 w-8 text-primary" />
+                <CardHeader className="text-center pb-4">
+                  <div className="mx-auto w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-lg">
+                    <type.icon className={`h-10 w-10 ${type.iconColor}`} />
                   </div>
-                  <CardTitle className="text-xl">{type.title}</CardTitle>
+                  <CardTitle className="text-2xl text-gray-800">{type.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-center mb-4">
+                <CardContent className="text-center">
+                  <CardDescription className="text-gray-600 text-base mb-6 leading-relaxed">
                     {type.description}
                   </CardDescription>
-                  <Button className="w-full btn-primary">
-                    Register as {type.title}
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg font-medium">
+                    Get Started as {type.title}
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
           
-          <div className="text-center mt-8">
-            <p className="text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:underline font-medium">
-                Login here
-              </Link>
-            </p>
+          {/* Bottom CTA */}
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-4">Already have an account?</p>
+            <Link to="/login">
+              <Button variant="outline" className="px-8 py-3 text-lg border-green-600 text-green-600 hover:bg-green-50">
+                Sign In Instead
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -190,52 +169,64 @@ const Register = () => {
   const selectedUserType = userTypes.find(type => type.type === userType);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary/20 leaf-pattern px-4 py-8">
-      <div className="w-full max-w-md">
-        <Card className="card-elevated">
-          <CardHeader className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <selectedUserType.icon className="h-8 w-8 text-primary" />
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-green-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Link to="/" className="flex items-center space-x-2 text-green-600 hover:text-green-700 transition-colors">
+            <Leaf className="h-8 w-8" />
+            <span className="text-xl font-bold">KrishiSat</span>
+          </Link>
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
+          <CardHeader className="text-center pb-8">
+            <div className={`mx-auto w-20 h-20 ${selectedUserType.color} rounded-full flex items-center justify-center mb-6`}>
+              <selectedUserType.icon className={`h-10 w-10 ${selectedUserType.iconColor}`} />
             </div>
-            <CardTitle className="text-2xl font-bold">Register as {selectedUserType.title}</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-3xl font-bold text-gray-800">
+              Register as {selectedUserType.title}
+            </CardTitle>
+            <CardDescription className="text-lg text-gray-600 mt-2">
               {selectedUserType.description}
             </CardDescription>
           </CardHeader>
           
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+          <CardContent className="px-8 pb-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="first_name">First Name</Label>
+                  <Label htmlFor="first_name" className="text-gray-700 font-medium">First Name</Label>
                   <Input
                     id="first_name"
                     name="first_name"
                     type="text"
+                    placeholder="Enter your first name"
                     value={formData.first_name}
                     onChange={handleInputChange}
-                    className="input-field"
+                    className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last_name">Last Name</Label>
+                  <Label htmlFor="last_name" className="text-gray-700 font-medium">Last Name</Label>
                   <Input
                     id="last_name"
                     name="last_name"
                     type="text"
+                    placeholder="Enter your last name"
                     value={formData.last_name}
                     onChange={handleInputChange}
-                    className="input-field"
+                    className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500"
                     required
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="phone_number">Phone Number</Label>
+                <Label htmlFor="phone_number" className="text-gray-700 font-medium">Phone Number</Label>
                 <Input
                   id="phone_number"
                   name="phone_number"
@@ -243,30 +234,31 @@ const Register = () => {
                   placeholder="+91 9876543210"
                   value={formData.phone_number}
                   onChange={handleInputChange}
-                  className="input-field"
+                  className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500"
                   required
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
+                  placeholder="your.email@example.com"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="input-field"
+                  className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500"
                   required
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label>State</Label>
-                  <Select onValueChange={handleStateChange} value={formData.state}>
-                    <SelectTrigger className="input-field">
-                      <SelectValue placeholder="Select state" />
+                  <Label className="text-gray-700 font-medium">State</Label>
+                  <Select onValueChange={(value) => setFormData({...formData, state: value})} value={formData.state}>
+                    <SelectTrigger className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500">
+                      <SelectValue placeholder="Select your state" />
                     </SelectTrigger>
                     <SelectContent>
                       {states.map((state) => (
@@ -279,14 +271,14 @@ const Register = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label>District</Label>
+                  <Label className="text-gray-700 font-medium">District</Label>
                   <Select 
                     onValueChange={(value) => setFormData({...formData, district: value})}
                     value={formData.district}
                     disabled={!formData.state}
                   >
-                    <SelectTrigger className="input-field">
-                      <SelectValue placeholder="Select district" />
+                    <SelectTrigger className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500">
+                      <SelectValue placeholder="Select your district" />
                     </SelectTrigger>
                     <SelectContent>
                       {districts.map((district) => (
@@ -300,63 +292,66 @@ const Register = () => {
               </div>
               
               {(userType === 'staff' || userType === 'govt_official') && (
-                <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="organization">Organization</Label>
+                    <Label htmlFor="organization" className="text-gray-700 font-medium">Organization</Label>
                     <Input
                       id="organization"
                       name="organization"
                       type="text"
+                      placeholder="Enter organization name"
                       value={formData.organization}
                       onChange={handleInputChange}
-                      className="input-field"
+                      className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="designation">Designation</Label>
+                    <Label htmlFor="designation" className="text-gray-700 font-medium">Designation</Label>
                     <Input
                       id="designation"
                       name="designation"
                       type="text"
+                      placeholder="Enter your designation"
                       value={formData.designation}
                       onChange={handleInputChange}
-                      className="input-field"
+                      className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500"
                       required
                     />
                   </div>
-                </>
+                </div>
               )}
               
               <Button 
                 type="submit" 
-                className="w-full btn-primary"
+                className="w-full h-12 bg-green-600 hover:bg-green-700 text-white text-lg font-medium mt-8"
                 disabled={loading}
               >
                 {loading ? (
-                  <LoadingSpinner size="sm" text="" />
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                    Creating Account...
+                  </div>
                 ) : (
-                  'Create Account'
+                  'Create My Account'
                 )}
               </Button>
             </form>
             
-            <div className="text-center pt-4 border-t border-border mt-6">
+            <div className="text-center pt-6 border-t border-gray-200 mt-8">
               <Button
                 variant="ghost"
                 onClick={() => setUserType('')}
-                className="text-sm"
+                className="text-gray-600 hover:text-gray-800 mb-4"
               >
-                ← Choose different role
+                ← Choose Different Role
               </Button>
-            </div>
-            
-            <div className="text-center pt-2">
-              <p className="text-sm text-muted-foreground">
+              
+              <p className="text-gray-600">
                 Already have an account?{' '}
-                <Link to="/login" className="text-primary hover:underline font-medium">
-                  Login here
+                <Link to="/login" className="text-green-600 hover:text-green-700 font-medium">
+                  Sign in here
                 </Link>
               </p>
             </div>
