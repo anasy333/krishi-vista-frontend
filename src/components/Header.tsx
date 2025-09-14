@@ -8,23 +8,23 @@ const Header = () => {
   const location = useLocation();
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Products", href: "#" },
-    { name: "Careers", href: "/careers" },
+    { name: "Dashboard", href: "/" },
+    { name: "Analytics", href: "/analytics" },
+    { name: "Map View", href: "/map" },
+    { name: "Profile", href: "/profile" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 py-4">
+    <header className="fixed top-0 w-full z-50 py-4 backdrop-blur-md bg-black/20">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 px-6 py-3">
+        <div className="px-6 py-3 transition-all duration-500 hover:bg-white/10 rounded-2xl">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <div className="flex items-center justify-center w-8 h-8 bg-gradient-primary rounded-md">
                 <span className="text-primary-foreground font-bold text-sm">S</span>
               </div>
-              <span className="font-bold text-lg text-gray-900">sabagroup</span>
+              <span className="font-bold text-xl text-white">KrishiSat</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -33,10 +33,10 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`font-medium transition-colors hover:text-primary ${
+                  className={`font-medium text-lg transition-all duration-300 hover:text-primary hover:scale-105 ${
                     location.pathname === item.href
-                      ? "text-primary"
-                      : "text-gray-700"
+                      ? "text-primary font-bold"
+                      : "text-white/90"
                   }`}
                 >
                   {item.name}
@@ -50,15 +50,15 @@ const Header = () => {
                 <Button 
                   variant="default" 
                   size="sm" 
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary-hover font-medium px-6 py-2 rounded-full"
+                  className="bg-primary/20 text-white border border-white/30 hover:bg-primary hover:scale-105 font-medium px-8 py-3 rounded-full transition-all duration-300 backdrop-blur-sm"
                 >
-                  Contact Us
+                  Get Started
                 </Button>
               </div>
 
               {/* Mobile Menu Button */}
               <button
-                className="lg:hidden p-2 text-gray-700 hover:text-primary transition-colors"
+                className="lg:hidden p-2 text-white hover:text-primary transition-all duration-300 hover:scale-110"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -68,14 +68,14 @@ const Header = () => {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="lg:hidden mt-4 pt-4 border-t border-gray-200">
+            <div className="lg:hidden mt-4 pt-4 border-t border-white/20 backdrop-blur-md bg-black/30 rounded-xl animate-fade-in">
               <nav className="flex flex-col space-y-3">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`font-medium py-2 transition-colors hover:text-primary ${
-                      location.pathname === item.href ? "text-primary" : "text-gray-700"
+                    className={`font-medium py-3 px-4 transition-all duration-300 hover:text-primary hover:bg-white/10 rounded-lg ${
+                      location.pathname === item.href ? "text-primary bg-primary/20" : "text-white/90"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -85,9 +85,9 @@ const Header = () => {
                 <Button 
                   variant="default" 
                   size="sm" 
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary-hover font-medium px-6 py-2 rounded-full mt-4 w-fit"
+                  className="bg-primary/20 text-white border border-white/30 hover:bg-primary font-medium px-6 py-3 rounded-full mt-4 w-fit transition-all duration-300"
                 >
-                  Contact Us
+                  Get Started
                 </Button>
               </nav>
             </div>
